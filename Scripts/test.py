@@ -1,8 +1,11 @@
 import natnetclient as natnet
 import numpy as np
-client = natnet.NatClient(client_ip='127.0.0.1', data_port=1511, comm_port=1510)
-
+import os
+print("1234")
+client = natnet.NatClient()
 while(True):
-    center = np.array(client.rigid_bodies["RigidBody_1"].position)
-    position = np.array(client.rigid_bodies["RigidBody_2"].position) - center
-    print(position)
+    center = client.rigid_bodies["Triangle"].position
+    position = center  # np.array(client.rigid_bodies["TestBody"].position) - center
+    # orientation_n = np.array(client.rigid_bodies["Triangle"].quaternion)
+    # os.system("cls")
+    print(position) #,orientation_n)
