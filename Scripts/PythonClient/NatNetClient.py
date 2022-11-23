@@ -314,7 +314,7 @@ class NatNetClient:
             
             if(self.multicast_address != "255.255.255.255"):
                 result.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, socket.inet_aton(self.multicast_address) + socket.inet_aton(self.local_ip_address))
-
+        result.settimeout(1)
         return result
 
     # Unpack a rigid body object from a data packet
@@ -1167,8 +1167,9 @@ class NatNetClient:
             except socket.error as msg:
                 if stop():
                     #print("ERROR: command socket access error occurred:\n  %s" %msg)
-                    #return 1
+                    # return 1
                     print("shutting down")
+                    
             except  socket.herror:
                 print("ERROR: command socket access herror occurred")
                 return 2
@@ -1215,9 +1216,10 @@ class NatNetClient:
             try:
                 data, addr = in_socket.recvfrom( recv_buffer_size )
             except socket.error as msg:
-                if not stop():
-                    print("ERROR: data socket access error occurred:\n  %s" %msg)
-                    return 1
+                if stop():
+                    print("Data reception stopped")
+                    # print("ERROR: data socket access error occurred:\n  %s" %msg)
+                    # return 1
             except  socket.herror:
                 print("ERROR: data socket access herror occurred")
                 #return 2
@@ -1226,8 +1228,9 @@ class NatNetClient:
                 #return 3
             except  socket.timeout:
                 #if self.use_multicast:
-                print("ERROR: data socket access timeout occurred. Server not responding")
+                # print("ERROR: data socket access timeout occurred. Server not responding")
                 #return 4
+                pass
             if len( data ) > 0 :
                 #peek ahead at message_id
                 message_id = get_message_id(data)
@@ -1235,7 +1238,7 @@ class NatNetClient:
                 if tmp_str not in message_id_dict:
                     message_id_dict[tmp_str]=0
                 message_id_dict[tmp_str] += 1
-                
+                print("Or here")
                 print_level = gprint_level()
                 if message_id == self.NAT_FRAMEOFDATA:
                     if print_level > 0:
